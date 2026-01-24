@@ -1,7 +1,11 @@
-import { MapContainer, TileLayer, Marker, Popup, Polyline, useMapEvents } from 'react-leaflet'
+import { useState, useEffect, useRef } from 'react'
+import { MapContainer, TileLayer, Marker, Popup, Polyline, useMapEvents, useMap } from 'react-leaflet'
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
 import type { Location } from '../types/database'
+
+const LINE_ANIMATION_MS = 700
+const FIT_PADDING: [number, number] = [50, 50]
 
 // Fix for default markers not showing in React-Leaflet
 delete (L.Icon.Default.prototype as any)._getIconUrl
@@ -52,6 +56,43 @@ function MapClickHandler({ onMapClick, disabled }: { onMapClick: (lat: number, l
   return null
 }
 
+// Zoom/fit to show both pins when showing result; reset view when going back to guess mode
+function MapViewFit({
+  showResult,
+  guessLocation,
+  actualLocation,
+  center,
+  zoom,
+}: {
+  showResult: boolean
+  guessLocation: { lat: number; lng: number } | null
+  actualLocation: Location | null
+  center: [number, number]
+  zoom: number
+}) {
+  const map = useMap()
+  const prevShowResult = useRef(showResult)
+
+  useEffect(() => {
+    if (showResult && guessLocation && actualLocation) {
+      const bounds = L.latLngBounds(
+        [guessLocation.lat, guessLocation.lng],
+        [actualLocation.latitude, actualLocation.longitude]
+      )
+      map.fitBounds(bounds, { padding: FIT_PADDING, maxZoom: 15 })
+    }
+  }, [showResult, guessLocation, actualLocation, map])
+
+  useEffect(() => {
+    if (prevShowResult.current && !showResult) {
+      map.setView(center, zoom)
+    }
+    prevShowResult.current = showResult
+  }, [showResult, center, zoom, map])
+
+  return null
+}
+
 export const MapComponent: React.FC<MapComponentProps> = ({
   center,
   zoom = 15,
@@ -61,6 +102,33 @@ export const MapComponent: React.FC<MapComponentProps> = ({
   showResult = false,
   disabled = false
 }) => {
+  const [lineProgress, setLineProgress] = useState(0)
+
+  // Animate dotted line from guess toward actual when showing result
+  useEffect(() => {
+    if (!showResult || !guessLocation || !actualLocation) {
+      setLineProgress(0)
+      return
+    }
+    const start = performance.now()
+    let rafId: number
+    const tick = (now: number) => {
+      const t = Math.min((now - start) / LINE_ANIMATION_MS, 1)
+      setLineProgress(t)
+      if (t < 1) rafId = requestAnimationFrame(tick)
+    }
+    rafId = requestAnimationFrame(tick)
+    return () => cancelAnimationFrame(rafId)
+  }, [showResult, guessLocation, actualLocation])
+
+  const showLine = showResult && guessLocation && actualLocation
+  const endLat = showLine
+    ? guessLocation.lat + (actualLocation.latitude - guessLocation.lat) * lineProgress
+    : guessLocation?.lat ?? 0
+  const endLng = showLine
+    ? guessLocation.lng + (actualLocation.longitude - guessLocation.lng) * lineProgress
+    : guessLocation?.lng ?? 0
+
   return (
     <MapContainer
       center={center}
@@ -71,6 +139,13 @@ export const MapComponent: React.FC<MapComponentProps> = ({
       <TileLayer
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+      />
+      <MapViewFit
+        showResult={showResult}
+        guessLocation={guessLocation ?? null}
+        actualLocation={actualLocation ?? null}
+        center={center}
+        zoom={zoom}
       />
       {onMapClick && <MapClickHandler onMapClick={onMapClick} disabled={disabled || showResult} />}
       
@@ -86,12 +161,12 @@ export const MapComponent: React.FC<MapComponentProps> = ({
         </Marker>
       )}
 
-      {/* Dotted line from guess to actual (MacGuessr-style) */}
-      {showResult && guessLocation && actualLocation && (
+      {/* Animated dotted line from guess to actual */}
+      {showLine && (
         <Polyline
           positions={[
             [guessLocation.lat, guessLocation.lng],
-            [actualLocation.latitude, actualLocation.longitude],
+            [endLat, endLng],
           ]}
           pathOptions={{
             color: '#6b21a8',
