@@ -60,21 +60,21 @@ export const Home: React.FC<HomeProps> = ({ onStartGame }) => {
       <MapPin className="absolute right-[2%] top-[52%] -translate-y-1/2 w-5 h-5 text-pink-400/35 pointer-events-none" aria-hidden="true" />
 
       <div className="max-w-2xl mx-auto text-center mt-20 relative z-10">
-        <h1 className="text-6xl font-extrabold mb-10 tracking-tight">
+        <h1 className="text-8xl sm:text-9xl font-extrabold mb-8 tracking-tight">
           <span className="text-purple-900">Uwo</span>
           <span className="text-slate-800">Guessr</span>
         </h1>
 
-        <div className="flex flex-col items-center gap-4">
+        <div className="flex flex-col items-center gap-3">
           <button
             onClick={() => onStartGame('daily')}
-            className="w-full max-w-sm bg-purple-900 text-white px-12 py-4 rounded-2xl font-bold hover:bg-purple-800 transition-all duration-200 text-lg shadow-lg shadow-purple-900/20 hover:shadow-xl hover:shadow-purple-900/25 hover:scale-[1.02] active:scale-[0.98]"
+            className="w-full max-w-[300px] bg-purple-900 text-white px-8 py-3 rounded-2xl font-bold hover:bg-purple-800 transition-all duration-200 text-base shadow-lg shadow-purple-900/20 hover:shadow-xl hover:shadow-purple-900/25 hover:scale-[1.02] active:scale-[0.98]"
           >
             Daily Challenge
           </button>
           <button
             onClick={() => onStartGame('classic')}
-            className="w-full max-w-[280px] bg-transparent text-slate-600 border-2 border-purple-900/70 px-8 py-2.5 rounded-2xl font-semibold hover:border-purple-900 hover:text-slate-800 hover:bg-purple-50/20 transition-all duration-200 text-base"
+            className="w-full max-w-[240px] bg-transparent text-slate-600 border-2 border-purple-900/70 px-6 py-2 rounded-2xl font-semibold hover:border-purple-900 hover:text-slate-800 hover:bg-purple-50/20 transition-all duration-200 text-sm"
           >
             Play Classic
           </button>
