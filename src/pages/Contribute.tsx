@@ -64,7 +64,7 @@ export const Contribute: React.FC = () => {
 
   if (submitted) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-purple-50/70 to-pink-50/80 p-4 flex items-center justify-center">
+      <div className="min-h-screen p-4 flex items-center justify-center">
         <div className="bg-white rounded-2xl p-8 shadow-2xl shadow-slate-200/50 max-w-md w-full text-center border border-slate-100">
           <CheckCircle className="mx-auto mb-4 text-green-500" size={64} />
           <h2 className="text-3xl font-bold mb-4 text-slate-800">Thank You!</h2>
@@ -83,7 +83,7 @@ export const Contribute: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-purple-50/70 to-pink-50/80 p-4">
+    <div className="min-h-screen p-4">
       <div className="max-w-4xl mx-auto">
         <h2 className="text-3xl font-bold mb-6 flex items-center gap-3">
           <Upload className="text-purple-900" size={36} />

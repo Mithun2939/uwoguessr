@@ -1,6 +1,6 @@
 export const About: React.FC = () => {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-purple-50/70 to-pink-50/80 p-4">
+    <div className="min-h-screen p-4">
       <div className="max-w-3xl mx-auto space-y-6">
         <div className="bg-white rounded-2xl p-6 shadow-lg shadow-slate-200/50 border border-slate-100 transition-all duration-300 hover:shadow-xl hover:shadow-purple-900/5 hover:border-purple-100">
           <h2 className="text-2xl font-bold text-purple-900 mb-4">

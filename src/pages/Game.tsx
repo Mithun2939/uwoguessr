@@ -111,7 +111,7 @@ export const Game: React.FC<GameProps> = ({ mode, onComplete, onExit }) => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-purple-50/70 to-pink-50/80 p-4 flex items-center justify-center">
+      <div className="min-h-screen p-4 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-900 mx-auto mb-4"></div>
           <p className="text-gray-600">Loading challenge...</p>
@@ -122,7 +122,7 @@ export const Game: React.FC<GameProps> = ({ mode, onComplete, onExit }) => {
 
   if (showNameInput) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-purple-50/70 to-pink-50/80 p-4 flex items-center justify-center">
+      <div className="min-h-screen p-4 flex items-center justify-center">
         <div className="bg-white rounded-2xl p-8 shadow-2xl shadow-slate-200/50 max-w-md w-full border border-slate-100">
           <Trophy className="mx-auto mb-4 text-yellow-500" size={64} />
           <h2 className="text-3xl font-bold mb-2 text-center">Great Job!</h2>
@@ -175,7 +175,7 @@ export const Game: React.FC<GameProps> = ({ mode, onComplete, onExit }) => {
   const currentLocation = locations[round]
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-purple-50/70 to-pink-50/80 p-4">
+    <div className="min-h-screen p-4">
       <div className="max-w-6xl mx-auto">
         {/* Progress bar */}
         <div className="mb-4 bg-white rounded-2xl p-3 shadow-lg shadow-slate-200/50 border border-slate-100">

@@ -26,41 +26,38 @@ export const Home: React.FC<HomeProps> = ({ onStartGame }) => {
   }, [])
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-purple-50/70 to-pink-50/80 p-4 relative overflow-hidden">
-      {/* Map-style grid + soft blurs */}
+    <div className="min-h-screen p-4 relative overflow-hidden">
+      {/* Grid background — extends into padding so it spans the whole area */}
       <div
-        className="absolute inset-0 pointer-events-none"
+        className="absolute -inset-4 pointer-events-none"
         style={{
           backgroundImage: `
-            linear-gradient(rgba(148, 163, 184, 0.07) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(148, 163, 184, 0.07) 1px, transparent 1px)
+            linear-gradient(rgba(147, 51, 234, 0.08) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(147, 51, 234, 0.08) 1px, transparent 1px)
           `,
-          backgroundSize: '28px 28px',
+          backgroundSize: '32px 32px',
+          backgroundRepeat: 'repeat',
         }}
+        aria-hidden="true"
       />
+      {/* Soft overlay to blend grid — same extent as grid */}
       <div
-        className="absolute inset-0 pointer-events-none"
+        className="absolute -inset-4 pointer-events-none"
         style={{
           background: `
-            radial-gradient(ellipse 70% 50% at 30% 30%, rgba(147, 51, 234, 0.07) 0%, transparent 50%),
-            radial-gradient(ellipse 60% 50% at 70% 70%, rgba(236, 72, 153, 0.06) 0%, transparent 50%)
+            radial-gradient(ellipse 70% 50% at 30% 30%, rgba(147, 51, 234, 0.05) 0%, transparent 50%),
+            radial-gradient(ellipse 60% 50% at 70% 70%, rgba(236, 72, 153, 0.04) 0%, transparent 50%)
           `,
         }}
+        aria-hidden="true"
       />
-      {/* Animated soft blobs */}
-      <div className="absolute top-[5%] right-[10%] w-80 h-80 rounded-full bg-purple-300/20 pointer-events-none animate-blob-float blur-3xl" />
-      <div className="absolute bottom-[15%] left-[5%] w-72 h-72 rounded-full bg-pink-300/15 pointer-events-none animate-blob-float-slow blur-3xl" />
-      <div className="absolute top-[50%] left-[50%] -translate-x-1/2 -translate-y-1/2 w-96 h-96 rounded-full bg-purple-200/10 pointer-events-none animate-blob-float blur-3xl" />
-      {/* Scattered map-pin watermarks */}
-      <MapPin className="absolute top-[12%] left-[8%] w-14 h-14 text-slate-400/25 pointer-events-none animate-pin-pulse" strokeWidth={1.5} />
-      <MapPin className="absolute top-[55%] right-[10%] w-16 h-16 text-slate-400/22 pointer-events-none" strokeWidth={1.5} />
-      <MapPin className="absolute bottom-[20%] left-[15%] w-12 h-12 text-purple-400/25 pointer-events-none" strokeWidth={1.5} />
-      <MapPin className="absolute top-[35%] right-[22%] w-10 h-10 text-slate-400/20 pointer-events-none animate-pin-pulse" strokeWidth={1.5} />
-      <MapPin className="absolute top-[70%] left-[25%] w-11 h-11 text-pink-400/20 pointer-events-none" strokeWidth={1.5} />
-      <MapPin className="absolute top-[22%] right-[35%] w-9 h-9 text-slate-400/24 pointer-events-none" strokeWidth={1.5} />
-      <MapPin className="absolute bottom-[35%] right-[18%] w-13 h-13 text-purple-400/18 pointer-events-none" strokeWidth={1.5} />
-      <MapPin className="absolute top-[80%] right-[30%] w-8 h-8 text-pink-300/20 pointer-events-none" strokeWidth={1.5} />
-      <MapPin className="absolute top-[8%] right-[50%] w-10 h-10 text-slate-300/22 pointer-events-none" strokeWidth={1.5} />
+      {/* Decorative pins — placed in margins so they don't block title, buttons, or cards */}
+      <MapPin className="absolute left-[4%] top-[7%] w-6 h-6 text-purple-400/45 pointer-events-none" aria-hidden="true" />
+      <MapPin className="absolute right-[5%] top-[10%] w-7 h-7 text-purple-500/40 pointer-events-none" aria-hidden="true" />
+      <MapPin className="absolute left-[5%] bottom-[12%] w-5 h-5 text-pink-400/40 pointer-events-none" aria-hidden="true" />
+      <MapPin className="absolute right-[4%] bottom-[15%] w-6 h-6 text-purple-400/45 pointer-events-none" aria-hidden="true" />
+      <MapPin className="absolute left-[2%] top-[48%] -translate-y-1/2 w-5 h-5 text-purple-400/35 pointer-events-none" aria-hidden="true" />
+      <MapPin className="absolute right-[2%] top-[52%] -translate-y-1/2 w-5 h-5 text-pink-400/35 pointer-events-none" aria-hidden="true" />
 
       <div className="max-w-2xl mx-auto text-center mt-20 relative z-10">
         <h1 className="text-6xl font-extrabold mb-10 tracking-tight">

@@ -20,7 +20,7 @@ export const Leaderboard: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-purple-50/70 to-pink-50/80 p-4">
+    <div className="min-h-screen p-4">
       <div className="max-w-2xl mx-auto">
         <h2 className="text-3xl font-bold mb-6 flex items-center gap-3">
           <Trophy className="text-yellow-500" size={36} />
