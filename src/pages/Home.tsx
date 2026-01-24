@@ -9,10 +9,35 @@ export const Home: React.FC<HomeProps> = ({ onStartGame }) => {
   const MAX_POINTS = MAX_ROUNDS * 5000
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 to-pink-50 p-4">
-      <div className="max-w-2xl mx-auto text-center mt-20">
+    <div className="min-h-screen bg-gradient-to-br from-purple-50 to-pink-50 p-4 relative overflow-hidden">
+      {/* Subtle background: grid + soft blurs + map-pin watermarks */}
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          backgroundImage: `
+            linear-gradient(rgba(147, 51, 234, 0.04) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(147, 51, 234, 0.04) 1px, transparent 1px)
+          `,
+          backgroundSize: '48px 48px',
+        }}
+      />
+      <div
+        className="absolute inset-0 pointer-events-none opacity-30"
+        style={{
+          background: `
+            radial-gradient(ellipse 80% 50% at 20% 40%, rgba(147, 51, 234, 0.08) 0%, transparent 50%),
+            radial-gradient(ellipse 60% 40% at 80% 60%, rgba(236, 72, 153, 0.06) 0%, transparent 50%)
+          `,
+        }}
+      />
+      <MapPin className="absolute top-[18%] left-[12%] w-16 h-16 text-purple-400/10 pointer-events-none" strokeWidth={1.5} />
+      <MapPin className="absolute top-[60%] right-[15%] w-14 h-14 text-purple-500/10 pointer-events-none" strokeWidth={1.5} />
+      <MapPin className="absolute bottom-[25%] left-[20%] w-12 h-12 text-pink-400/10 pointer-events-none" strokeWidth={1.5} />
+      <MapPin className="absolute top-[35%] right-[25%] w-10 h-10 text-purple-400/10 pointer-events-none" strokeWidth={1.5} />
+
+      <div className="max-w-2xl mx-auto text-center mt-20 relative z-10">
         <h1 className="text-6xl font-bold mb-4">
-          <span className="text-purple-900">Western</span>
+          <span className="text-purple-900">Uwo</span>
           <span className="text-gray-700">Guessr</span>
         </h1>
         

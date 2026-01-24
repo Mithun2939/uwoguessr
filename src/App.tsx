@@ -27,10 +27,8 @@ function App() {
     setFinalScore(null)
   }
 
-  const handleNavigate = (newView: View) => {
-    if (newView !== 'game' && newView !== 'results') {
-      setView(newView)
-    }
+  const handleNavigate = (newView: string) => {
+    if (newView !== 'game' && newView !== 'results') setView(newView as View)
   }
 
   return (
