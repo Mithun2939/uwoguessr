@@ -1,5 +1,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
-  <rect width="32" height="32" rx="4" fill="#6b21a8"/>
-  <!-- White W (filled) -->
-  <path d="M5 10 L9 22 L16 12 L23 22 L27 10 Z" fill="white"/>
+  <rect width="32" height="32" rx="6" fill="#6b21a8"/>
+  <!-- Map pin: location / "guess where" - bold and clear at small sizes -->
+  <path d="M16 5 C21 5 25 9 25 14 C25 20 16 26 16 26 C16 26 7 20 7 14 C7 9 11 5 16 5 Z" fill="white"/>
+  <!-- Small dot: "you are here" -->
+  <circle cx="16" cy="12" r="2.5" fill="#6b21a8"/>
 </svg>

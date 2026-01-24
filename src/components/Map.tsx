@@ -1,5 +1,4 @@
-import { useCallback } from 'react'
-import { MapContainer, TileLayer, Marker, Popup, useMapEvents } from 'react-leaflet'
+import { MapContainer, TileLayer, Marker, Popup, Polyline, useMapEvents } from 'react-leaflet'
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
 import type { Location } from '../types/database'
@@ -85,6 +84,22 @@ export const MapComponent: React.FC<MapComponentProps> = ({
         <Marker position={[actualLocation.latitude, actualLocation.longitude]} icon={correctIcon}>
           <Popup>{actualLocation.name}</Popup>
         </Marker>
+      )}
+
+      {/* Dotted line from guess to actual (MacGuessr-style) */}
+      {showResult && guessLocation && actualLocation && (
+        <Polyline
+          positions={[
+            [guessLocation.lat, guessLocation.lng],
+            [actualLocation.latitude, actualLocation.longitude],
+          ]}
+          pathOptions={{
+            color: '#6b21a8',
+            weight: 3,
+            opacity: 0.9,
+            dashArray: '8, 10',
+          }}
+        />
       )}
     </MapContainer>
   )
