@@ -78,7 +78,8 @@ export const getTodayChallenge = async (): Promise<DailyChallenge | null> => {
 }
 
 /**
- * Get locations for a challenge
+ * Get locations for a challenge.
+ * Shuffles the 5 so round order (1–5) is random each time you load the game.
  */
 export const getChallengeLocations = async (challenge: DailyChallenge): Promise<Location[]> => {
   const { data, error } = await supabase
@@ -91,8 +92,9 @@ export const getChallengeLocations = async (challenge: DailyChallenge): Promise<
     return []
   }
   
-  // Return locations in the order specified by location_ids
-  return challenge.location_ids
+  const ordered = challenge.location_ids
     .map(id => data.find(loc => loc.id === id))
     .filter((loc): loc is Location => loc !== undefined)
+  
+  return shuffle(ordered)
 }
