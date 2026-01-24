@@ -1,0 +1,8 @@
+{
+  "rewrites": [
+    {
+      "source": "/uwoguessr/assets/:path*",
+      "destination": "/assets/:path*"
+    }
+  ]
+}
