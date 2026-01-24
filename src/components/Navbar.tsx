@@ -8,41 +8,41 @@ interface NavbarProps {
 export const Navbar: React.FC<NavbarProps> = ({ currentView, onNavigate }) => {
   return (
     <nav className="max-w-6xl mx-auto flex justify-between items-center mb-8 pt-4">
-      <div className="flex gap-4 text-gray-700 text-sm font-medium flex-wrap">
+      <div className="flex gap-2 text-slate-600 text-sm font-medium flex-wrap">
         <button
           onClick={() => onNavigate('home')}
-          className={`flex items-center gap-2 hover:text-purple-700 transition ${
-            currentView === 'home' ? 'text-purple-900 font-bold' : ''
+          className={`flex items-center gap-2 px-3 py-2 rounded-lg transition-all duration-200 hover:text-purple-700 hover:bg-purple-50/80 ${
+            currentView === 'home' ? 'text-purple-900 font-bold bg-purple-50/60' : ''
           }`}
         >
-          <Home size={18} />
+          <Home size={18} className="transition-transform duration-200 hover:scale-110" />
           Home
         </button>
         <button
           onClick={() => onNavigate('leaderboard')}
-          className={`hover:text-purple-700 transition ${
-            currentView === 'leaderboard' ? 'text-purple-900 font-bold' : ''
+          className={`flex items-center gap-2 px-3 py-2 rounded-lg transition-all duration-200 hover:text-purple-700 hover:bg-purple-50/80 ${
+            currentView === 'leaderboard' ? 'text-purple-900 font-bold bg-purple-50/60' : ''
           }`}
         >
-          <Trophy size={18} className="inline mr-1" />
+          <Trophy size={18} className="transition-transform duration-200 hover:scale-110" />
           Leaderboard
         </button>
         <button
           onClick={() => onNavigate('contribute')}
-          className={`hover:text-purple-700 transition ${
-            currentView === 'contribute' ? 'text-purple-900 font-bold' : ''
+          className={`flex items-center gap-2 px-3 py-2 rounded-lg transition-all duration-200 hover:text-purple-700 hover:bg-purple-50/80 ${
+            currentView === 'contribute' ? 'text-purple-900 font-bold bg-purple-50/60' : ''
           }`}
         >
-          <Upload size={18} className="inline mr-1" />
+          <Upload size={18} className="transition-transform duration-200 hover:scale-110" />
           Contribute
         </button>
         <button
           onClick={() => onNavigate('about')}
-          className={`hover:text-purple-700 transition ${
-            currentView === 'about' ? 'text-purple-900 font-bold' : ''
+          className={`flex items-center gap-2 px-3 py-2 rounded-lg transition-all duration-200 hover:text-purple-700 hover:bg-purple-50/80 ${
+            currentView === 'about' ? 'text-purple-900 font-bold bg-purple-50/60' : ''
           }`}
         >
-          <Info size={18} className="inline mr-1" />
+          <Info size={18} className="transition-transform duration-200 hover:scale-110" />
           About
         </button>
       </div>

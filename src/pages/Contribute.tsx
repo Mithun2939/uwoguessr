@@ -64,16 +64,16 @@ export const Contribute: React.FC = () => {
 
   if (submitted) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-purple-50 to-pink-50 p-4 flex items-center justify-center">
-        <div className="bg-white rounded-xl p-8 shadow-lg max-w-md w-full text-center">
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-purple-50/70 to-pink-50/80 p-4 flex items-center justify-center">
+        <div className="bg-white rounded-2xl p-8 shadow-2xl shadow-slate-200/50 max-w-md w-full text-center border border-slate-100">
           <CheckCircle className="mx-auto mb-4 text-green-500" size={64} />
-          <h2 className="text-3xl font-bold mb-4">Thank You!</h2>
-          <p className="text-gray-600 mb-6">
+          <h2 className="text-3xl font-bold mb-4 text-slate-800">Thank You!</h2>
+          <p className="text-slate-600 mb-6">
             Your submission has been received and will be reviewed before being added to the game.
           </p>
           <button
             onClick={() => setSubmitted(false)}
-            className="bg-purple-900 text-white px-8 py-3 rounded-lg font-semibold hover:bg-purple-800 transition"
+            className="bg-purple-900 text-white px-8 py-3 rounded-xl font-semibold hover:bg-purple-800 hover:shadow-xl hover:shadow-purple-900/25 hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 shadow-lg shadow-purple-900/20"
           >
             Submit Another
           </button>
@@ -83,15 +83,15 @@ export const Contribute: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 to-pink-50 p-4">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-purple-50/70 to-pink-50/80 p-4">
       <div className="max-w-4xl mx-auto">
         <h2 className="text-3xl font-bold mb-6 flex items-center gap-3">
           <Upload className="text-purple-900" size={36} />
           Contribute a Location
         </h2>
 
-        <div className="bg-white rounded-xl p-6 shadow-lg">
-          <p className="text-gray-600 mb-6">
+        <div className="bg-white rounded-2xl p-6 shadow-xl shadow-slate-200/50 border border-slate-100 transition-all duration-300 hover:shadow-2xl hover:shadow-slate-200/60 hover:border-purple-100">
+          <p className="text-slate-600 mb-6">
             Upload a campus photo, drop a pin on the map for <strong>latitude & longitude</strong>, and add a name. 
             After you submit, it gets reviewed—then your image and coordinates go into the game.
           </p>
@@ -179,7 +179,7 @@ export const Contribute: React.FC = () => {
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 placeholder="e.g., UC Courtyard, Weldon Library entrance"
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-900 focus:border-transparent"
+                className="w-full px-4 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-400 focus:border-purple-400 transition-all duration-200"
                 required
               />
             </div>
@@ -194,7 +194,7 @@ export const Contribute: React.FC = () => {
                 onChange={(e) => setDescription(e.target.value)}
                 placeholder="e.g. Main lawn in front of the building"
                 rows={2}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-900 focus:border-transparent"
+                className="w-full px-4 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-400 focus:border-purple-400 transition-all duration-200"
               />
             </div>
 
@@ -202,10 +202,10 @@ export const Contribute: React.FC = () => {
             <button
               type="submit"
               disabled={!file || !location || !name.trim() || submitting}
-              className={`w-full py-3 rounded-lg font-semibold transition ${
+              className={`w-full py-3 rounded-xl font-semibold transition-all duration-200 ${
                 file && location && name.trim() && !submitting
-                  ? 'bg-purple-900 text-white hover:bg-purple-800'
-                  : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                  ? 'bg-purple-900 text-white hover:bg-purple-800 hover:shadow-lg hover:shadow-purple-900/20 hover:scale-[1.01] active:scale-[0.99]'
+                  : 'bg-slate-200 text-slate-500 cursor-not-allowed'
               }`}
             >
               {submitting ? 'Submitting...' : 'Submit for Review'}

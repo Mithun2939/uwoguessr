@@ -98,3 +98,20 @@ export const getChallengeLocations = async (challenge: DailyChallenge): Promise<
   
   return shuffle(ordered)
 }
+
+/**
+ * Get 5 random locations for Classic mode.
+ * Does not use daily_challenges or increment usage_count. Play as much as you want.
+ */
+export const getRandomClassicLocations = async (): Promise<Location[]> => {
+  const { data: locations, error } = await supabase
+    .from('locations')
+    .select('*')
+    .eq('is_active', true)
+    .limit(500)
+
+  if (error || !locations || locations.length < 5) {
+    return []
+  }
+  return shuffle(locations).slice(0, 5)
+}

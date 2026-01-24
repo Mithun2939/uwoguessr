@@ -20,7 +20,7 @@ export const Leaderboard: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 to-pink-50 p-4">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-purple-50/70 to-pink-50/80 p-4">
       <div className="max-w-2xl mx-auto">
         <h2 className="text-3xl font-bold mb-6 flex items-center gap-3">
           <Trophy className="text-yellow-500" size={36} />
@@ -31,37 +31,37 @@ export const Leaderboard: React.FC = () => {
         <div className="mb-6 flex gap-2">
           <button
             onClick={() => setPeriod('daily')}
-            className={`px-4 py-2 rounded-lg font-medium transition ${
+            className={`px-4 py-2 rounded-xl font-medium transition-all duration-200 shadow-sm ${
               period === 'daily'
-                ? 'bg-purple-900 text-white'
-                : 'bg-white text-gray-700 hover:bg-gray-50'
+                ? 'bg-purple-900 text-white shadow-purple-900/20'
+                : 'bg-white text-slate-700 hover:bg-slate-50 hover:border-purple-200 hover:shadow-md border border-slate-200'
             }`}
           >
             Today
           </button>
           <button
             onClick={() => setPeriod('weekly')}
-            className={`px-4 py-2 rounded-lg font-medium transition ${
+            className={`px-4 py-2 rounded-xl font-medium transition-all duration-200 shadow-sm ${
               period === 'weekly'
-                ? 'bg-purple-900 text-white'
-                : 'bg-white text-gray-700 hover:bg-gray-50'
+                ? 'bg-purple-900 text-white shadow-purple-900/20'
+                : 'bg-white text-slate-700 hover:bg-slate-50 hover:border-purple-200 hover:shadow-md border border-slate-200'
             }`}
           >
             This Week
           </button>
           <button
             onClick={() => setPeriod('all-time')}
-            className={`px-4 py-2 rounded-lg font-medium transition ${
+            className={`px-4 py-2 rounded-xl font-medium transition-all duration-200 shadow-sm ${
               period === 'all-time'
-                ? 'bg-purple-900 text-white'
-                : 'bg-white text-gray-700 hover:bg-gray-50'
+                ? 'bg-purple-900 text-white shadow-purple-900/20'
+                : 'bg-white text-slate-700 hover:bg-slate-50 hover:border-purple-200 hover:shadow-md border border-slate-200'
             }`}
           >
             All Time
           </button>
         </div>
         
-        <div className="bg-white rounded-xl shadow-lg overflow-hidden">
+        <div className="bg-white rounded-2xl shadow-xl shadow-slate-200/50 overflow-hidden border border-slate-100 transition-shadow duration-300 hover:shadow-2xl hover:shadow-slate-200/60">
           {loading ? (
             <div className="p-12 text-center">
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-900 mx-auto mb-4"></div>
@@ -77,7 +77,7 @@ export const Leaderboard: React.FC = () => {
             entries.map((entry, index) => (
               <div 
                 key={entry.id}
-                className={`flex justify-between items-center p-4 border-b last:border-b-0 ${
+                className={`flex justify-between items-center p-4 border-b last:border-b-0 transition-colors duration-200 hover:bg-slate-50/60 ${
                   index === 0 ? 'bg-yellow-50' : index === 1 ? 'bg-gray-50' : index === 2 ? 'bg-orange-50' : ''
                 }`}
               >
