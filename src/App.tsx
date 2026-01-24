@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Analytics } from '@vercel/analytics/react'
 import { Navbar } from './components/Navbar'
 import { Home } from './pages/Home'
 import { Game } from './pages/Game'
@@ -103,6 +104,7 @@ function App() {
           © 2026 UwoGuessr • Made by <span className="text-purple-600 font-semibold">Mithun</span> with ❤️
         </footer>
       )}
+      <Analytics />
     </div>
   )
 }
