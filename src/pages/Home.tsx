@@ -27,7 +27,7 @@ export const Home: React.FC<HomeProps> = ({ onStartGame }) => {
 
   return (
     <div className="flex-1 flex flex-col justify-center p-4 sm:p-6 lg:p-8 relative overflow-x-hidden overflow-y-auto scrollbar-hide min-h-0">
-      {/* Grid background — extends into padding so it spans the whole area */}
+      {/* Grid background */}
       <div
         className="absolute -inset-4 pointer-events-none"
         style={{

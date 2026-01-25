@@ -11,10 +11,19 @@ function shuffle<T>(arr: T[]): T[] {
   return a
 }
 
+/** Get yesterday's date as YYYY-MM-DD (same timezone as toISOString). */
+function getYesterdayDateString(): string {
+  const d = new Date()
+  d.setUTCDate(d.getUTCDate() - 1)
+  return d.toISOString().split('T')[0]
+}
+
 /**
  * Get today's daily challenge
  * Creates a new challenge if one doesn't exist for today.
- * Picks 5 random locations from the active pool (not the same set every day).
+ * Picks 5 random locations from the active pool, excluding locations used in
+ * yesterday's challenge so each day gets 5 new pictures. Falls back to the
+ * full pool if fewer than 5 locations remain after excluding.
  */
 export const getTodayChallenge = async (): Promise<DailyChallenge | null> => {
   const today = new Date().toISOString().split('T')[0]
@@ -30,7 +39,16 @@ export const getTodayChallenge = async (): Promise<DailyChallenge | null> => {
     return existingChallenge
   }
   
-  // Fetch active locations, then pick 5 at random (so it's not the same photos every day)
+  // Fetch yesterday's challenge so we can exclude those locations (5 new pictures each day)
+  const yesterday = getYesterdayDateString()
+  const { data: yesterdayChallenge } = await supabase
+    .from('daily_challenges')
+    .select('location_ids')
+    .eq('date', yesterday)
+    .single()
+  const yesterdayIds: string[] = yesterdayChallenge?.location_ids ?? []
+  
+  // Fetch active locations
   const { data: locations, error: locationsError } = await supabase
     .from('locations')
     .select('id')
@@ -42,7 +60,10 @@ export const getTodayChallenge = async (): Promise<DailyChallenge | null> => {
     return null
   }
   
-  const locationIds = shuffle(locations).slice(0, 5).map(loc => loc.id)
+  // Prefer locations not used yesterday; fall back to full pool if fewer than 5
+  const excludeYesterday = locations.filter(loc => !yesterdayIds.includes(loc.id))
+  const pool = excludeYesterday.length >= 5 ? excludeYesterday : locations
+  const locationIds = shuffle(pool).slice(0, 5).map(loc => loc.id)
   
   // Increment usage count for selected locations
   // Note: Supabase doesn't support raw SQL in update, so we'll fetch and update

@@ -29,10 +29,13 @@ export const submitScore = async (
 
 /**
  * Get leaderboard entries
- * @param period - 'daily' | 'weekly' | 'all-time'
+ * @param period - 'daily' (today only) | 'weekly' | 'all-time'
+ * - daily: scores where challenge_date = today (resets each calendar day)
+ * - weekly: scores from the last 7 days by created_at
+ * - all-time: all scores
  */
 export const getLeaderboard = async (
-  period: 'daily' | 'weekly' | 'all-time' = 'all-time',
+  period: 'daily' | 'weekly' | 'all-time' = 'daily',
   limit: number = 100
 ): Promise<LeaderboardEntry[]> => {
   let query = supabase

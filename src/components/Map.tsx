@@ -134,7 +134,8 @@ export const MapComponent: React.FC<MapComponentProps> = ({
       center={center}
       zoom={zoom}
       style={{ height: '100%', width: '100%' }}
-      scrollWheelZoom={false}
+      scrollWheelZoom={true}
+      touchZoom={true}
     >
       <TileLayer
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'

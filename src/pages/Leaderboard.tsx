@@ -5,7 +5,7 @@ import type { LeaderboardEntry } from '../types/database'
 
 export const Leaderboard: React.FC = () => {
   const [entries, setEntries] = useState<LeaderboardEntry[]>([])
-  const [period, setPeriod] = useState<'daily' | 'weekly' | 'all-time'>('all-time')
+  const [period, setPeriod] = useState<'daily' | 'weekly' | 'all-time'>('daily')
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
@@ -22,10 +22,15 @@ export const Leaderboard: React.FC = () => {
   return (
     <div className="min-h-screen p-4">
       <div className="max-w-2xl mx-auto">
-        <h2 className="text-3xl font-bold mb-6 flex items-center gap-3">
+        <h2 className="text-3xl font-bold mb-4 flex items-center gap-3">
           <Trophy className="text-yellow-500" size={36} />
           Leaderboard
         </h2>
+        {period === 'daily' && (
+          <p className="text-slate-500 text-sm mb-4">
+            Scores from today&apos;s daily challenge — resets each day
+          </p>
+        )}
 
         {/* Period selector */}
         <div className="mb-6 flex gap-2">
@@ -70,7 +75,7 @@ export const Leaderboard: React.FC = () => {
           ) : entries.length === 0 ? (
             <div className="p-12 text-center text-gray-500">
               <Trophy className="mx-auto mb-4 text-gray-300" size={48} />
-              <p className="text-lg">No scores yet!</p>
+              <p className="text-lg">{period === 'daily' ? "No scores for today yet." : "No scores yet!"}</p>
               <p className="text-sm">Be the first to play and set a record.</p>
             </div>
           ) : (
