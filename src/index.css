@@ -2,13 +2,32 @@
 @tailwind components;
 @tailwind utilities;
 
+html,
+body {
+  overflow-x: hidden;
+}
+
 body {
   margin: 0;
   font-family: 'Nunito', ui-sans-serif, system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+body::-webkit-scrollbar {
+  display: none;
 }
 
 code {
   font-family: ui-monospace, 'Cascadia Code', 'Source Code Pro', Menlo, monospace;
+}
+
+/* Hide scrollbars while keeping scroll behavior (wheel/trackpad) */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
 }
