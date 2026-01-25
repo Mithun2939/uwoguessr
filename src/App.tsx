@@ -55,7 +55,7 @@ function App() {
         <Navbar currentView={view} onNavigate={handleNavigate} />
       )}
 
-      <main className="flex-1">
+      <main className="flex-1 flex flex-col min-h-0">
         {view === 'home' && <Home onStartGame={handleStartGame} />}
         {view === 'game' && (
           <Game mode={gameMode} onComplete={handleGameComplete} onExit={handleExitGame} />

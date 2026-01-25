@@ -26,7 +26,7 @@ export const Home: React.FC<HomeProps> = ({ onStartGame }) => {
   }, [])
 
   return (
-    <div className="min-h-screen p-4 relative overflow-hidden">
+    <div className="flex-1 flex flex-col justify-center p-4 sm:p-6 relative overflow-y-auto min-h-0">
       {/* Grid background — extends into padding so it spans the whole area */}
       <div
         className="absolute -inset-4 pointer-events-none"
@@ -59,8 +59,8 @@ export const Home: React.FC<HomeProps> = ({ onStartGame }) => {
       <MapPin className="absolute left-[2%] top-[48%] -translate-y-1/2 w-5 h-5 text-purple-400/35 pointer-events-none" aria-hidden="true" />
       <MapPin className="absolute right-[2%] top-[52%] -translate-y-1/2 w-5 h-5 text-pink-400/35 pointer-events-none" aria-hidden="true" />
 
-      <div className="max-w-2xl mx-auto text-center mt-20 relative z-10">
-        <h1 className="text-8xl sm:text-9xl font-extrabold mb-8 tracking-tight">
+      <div className="max-w-2xl mx-auto w-full text-center py-4 relative z-10 px-2 sm:px-4">
+        <h1 className="text-6xl sm:text-8xl md:text-9xl font-extrabold mb-6 sm:mb-8 tracking-tight">
           <span className="text-purple-900">Uwo</span>
           <span className="text-slate-800">Guessr</span>
         </h1>
@@ -68,13 +68,13 @@ export const Home: React.FC<HomeProps> = ({ onStartGame }) => {
         <div className="flex flex-col items-center gap-3">
           <button
             onClick={() => onStartGame('daily')}
-            className="w-full max-w-[300px] bg-purple-900 text-white px-8 py-3 rounded-2xl font-bold hover:bg-purple-800 transition-all duration-200 text-base shadow-lg shadow-purple-900/20 hover:shadow-xl hover:shadow-purple-900/25 hover:scale-[1.02] active:scale-[0.98]"
+            className="w-full max-w-[300px] bg-purple-900 text-white px-6 sm:px-8 py-2.5 sm:py-3 rounded-2xl font-bold hover:bg-purple-800 transition-all duration-200 text-sm sm:text-base shadow-lg shadow-purple-900/20 hover:shadow-xl hover:shadow-purple-900/25 hover:scale-[1.02] active:scale-[0.98]"
           >
             Daily Challenge
           </button>
           <button
             onClick={() => onStartGame('classic')}
-            className="w-full max-w-[240px] bg-transparent text-slate-600 border-2 border-purple-900/70 px-6 py-2 rounded-2xl font-semibold hover:border-purple-900 hover:text-slate-800 hover:bg-purple-50/20 transition-all duration-200 text-sm"
+            className="w-full max-w-[240px] bg-transparent text-slate-600 border-2 border-purple-900/70 px-5 sm:px-6 py-1.5 sm:py-2 rounded-2xl font-semibold hover:border-purple-900 hover:text-slate-800 hover:bg-purple-50/20 transition-all duration-200 text-sm"
           >
             Play Classic
           </button>
@@ -86,21 +86,21 @@ export const Home: React.FC<HomeProps> = ({ onStartGame }) => {
           </button>
         </div>
 
-        <div className="mt-20 grid grid-cols-3 gap-4 text-center">
-          <div className="bg-white/90 backdrop-blur-sm p-6 rounded-2xl shadow-lg shadow-slate-200/50 border border-slate-100 transition-all duration-300 hover:scale-[1.03] hover:shadow-xl hover:shadow-purple-900/10 hover:border-purple-200/60 cursor-default">
+        <div className="mt-10 sm:mt-16 grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4 text-center">
+          <div className="bg-white/90 backdrop-blur-sm p-4 sm:p-6 rounded-2xl shadow-lg shadow-slate-200/50 border border-slate-100 transition-all duration-300 hover:scale-[1.03] hover:shadow-xl hover:shadow-purple-900/10 hover:border-purple-200/60 cursor-default">
             <Target className="mx-auto mb-2 text-purple-900 transition-transform duration-300 hover:scale-110" size={32} />
-            <p className="font-bold text-2xl text-purple-900">{MAX_ROUNDS}</p>
-            <p className="text-slate-600 text-sm">Rounds</p>
+            <p className="font-bold text-xl sm:text-2xl text-purple-900">{MAX_ROUNDS}</p>
+            <p className="text-slate-600 text-xs sm:text-sm">Rounds</p>
           </div>
-          <div className="bg-white/90 backdrop-blur-sm p-6 rounded-2xl shadow-lg shadow-slate-200/50 border border-slate-100 transition-all duration-300 hover:scale-[1.03] hover:shadow-xl hover:shadow-purple-900/10 hover:border-purple-200/60 cursor-default">
+          <div className="bg-white/90 backdrop-blur-sm p-4 sm:p-6 rounded-2xl shadow-lg shadow-slate-200/50 border border-slate-100 transition-all duration-300 hover:scale-[1.03] hover:shadow-xl hover:shadow-purple-900/10 hover:border-purple-200/60 cursor-default">
             <Trophy className="mx-auto mb-2 text-purple-900 transition-transform duration-300 hover:scale-110" size={32} />
-            <p className="font-bold text-2xl text-purple-900">{MAX_POINTS.toLocaleString()}</p>
-            <p className="text-slate-600 text-sm">Max Points</p>
+            <p className="font-bold text-xl sm:text-2xl text-purple-900">{MAX_POINTS.toLocaleString()}</p>
+            <p className="text-slate-600 text-xs sm:text-sm">Max Points</p>
           </div>
-          <div className="bg-white/90 backdrop-blur-sm p-6 rounded-2xl shadow-lg shadow-slate-200/50 border border-slate-100 transition-all duration-300 hover:scale-[1.03] hover:shadow-xl hover:shadow-purple-900/10 hover:border-purple-200/60 cursor-default">
+          <div className="bg-white/90 backdrop-blur-sm p-4 sm:p-6 rounded-2xl shadow-lg shadow-slate-200/50 border border-slate-100 transition-all duration-300 hover:scale-[1.03] hover:shadow-xl hover:shadow-purple-900/10 hover:border-purple-200/60 cursor-default col-span-2 sm:col-span-1">
             <MapPin className="mx-auto mb-2 text-purple-900 transition-transform duration-300 hover:scale-110" size={32} />
-            <p className="font-bold text-2xl text-purple-900">Daily</p>
-            <p className="text-slate-600 text-sm">Challenge</p>
+            <p className="font-bold text-xl sm:text-2xl text-purple-900">Daily</p>
+            <p className="text-slate-600 text-xs sm:text-sm">Challenge</p>
           </div>
         </div>
       </div>

@@ -7,7 +7,7 @@ interface NavbarProps {
 
 export const Navbar: React.FC<NavbarProps> = ({ currentView, onNavigate }) => {
   return (
-    <nav className="max-w-6xl mx-auto flex justify-between items-center mb-8 pt-4">
+    <nav className="max-w-6xl mx-auto flex justify-between items-center mb-8 pt-4 px-4 sm:px-6">
       <div className="flex gap-6 sm:gap-8 text-slate-600 text-base font-medium flex-wrap">
         <button
           onClick={() => onNavigate('home')}
