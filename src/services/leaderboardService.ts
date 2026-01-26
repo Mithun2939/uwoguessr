@@ -2,6 +2,18 @@ import { supabase } from '../lib/supabase'
 import type { LeaderboardEntry } from '../types/database'
 
 /**
+ * Get today's date in local timezone as YYYY-MM-DD
+ * This ensures the date matches the user's calendar day, not UTC
+ */
+export function getTodayLocalDate(): string {
+  const now = new Date()
+  const year = now.getFullYear()
+  const month = String(now.getMonth() + 1).padStart(2, '0')
+  const day = String(now.getDate()).padStart(2, '0')
+  return `${year}-${month}-${day}`
+}
+
+/**
  * Submit a score to the leaderboard
  */
 export const submitScore = async (
@@ -30,9 +42,9 @@ export const submitScore = async (
 /**
  * Get leaderboard entries
  * @param period - 'daily' (today only) | 'weekly' | 'all-time'
- * - daily: scores where challenge_date = today (resets each calendar day), top 100
- * - weekly: scores from the last 7 days by created_at, top 100
- * - all-time: every entry ever (paginated to fetch all)
+ * - daily: scores where challenge_date = today (resets each calendar day)
+ * - weekly: scores from the last 7 days by created_at
+ * - all-time: all scores
  */
 export const getLeaderboard = async (
   period: 'daily' | 'weekly' | 'all-time' = 'daily',
@@ -40,7 +52,20 @@ export const getLeaderboard = async (
 ): Promise<LeaderboardEntry[]> => {
   const PAGE_SIZE = 1000 // Supabase/PostgREST default max per request
 
-  if (period === 'all-time') {
+  let query = supabase
+    .from('leaderboard')
+    .select('*')
+    .order('score', { ascending: false })
+  
+  if (period === 'daily') {
+    // Use local date to ensure it matches the user's calendar day
+    const today = getTodayLocalDate()
+    query = query.eq('challenge_date', today).limit(limit)
+  } else if (period === 'weekly') {
+    const weekAgo = new Date()
+    weekAgo.setDate(weekAgo.getDate() - 7)
+    query = query.gte('created_at', weekAgo.toISOString()).limit(limit)
+  } else if (period === 'all-time') {
     // Fetch every entry: paginate until no more rows
     const all: LeaderboardEntry[] = []
     let offset = 0
@@ -62,27 +87,13 @@ export const getLeaderboard = async (
     }
     return all
   }
-
-  let query = supabase
-    .from('leaderboard')
-    .select('*')
-    .order('score', { ascending: false })
-
-  if (period === 'daily') {
-    const today = new Date().toISOString().split('T')[0]
-    query = query.eq('challenge_date', today).limit(limit)
-  } else if (period === 'weekly') {
-    const weekAgo = new Date()
-    weekAgo.setDate(weekAgo.getDate() - 7)
-    query = query.gte('created_at', weekAgo.toISOString()).limit(limit)
-  }
-
+  
   const { data, error } = await query
-
+  
   if (error) {
     console.error('Error fetching leaderboard:', error)
     return []
   }
-
+  
   return data || []
 }

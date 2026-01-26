@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { MapComponent } from '../components/Map'
 import { processGuess } from '../utils/gameLogic'
 import { getTodayChallenge, getChallengeLocations, getRandomClassicLocations } from '../services/challengeService'
-import { submitScore } from '../services/leaderboardService'
+import { submitScore, getTodayLocalDate } from '../services/leaderboardService'
 import type { Location, Guess } from '../types/database'
 import { Trophy } from 'lucide-react'
 
@@ -104,7 +104,8 @@ export const Game: React.FC<GameProps> = ({ mode, onComplete, onExit }) => {
   const saveScore = async () => {
     if (!playerName.trim()) return
 
-    const today = new Date().toISOString().split('T')[0]
+    // Use local date (not UTC) to match the user's calendar day
+    const today = getTodayLocalDate()
     await submitScore(playerName.trim(), totalScore, today)
     onComplete(totalScore)
   }
