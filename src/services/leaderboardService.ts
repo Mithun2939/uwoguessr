@@ -29,6 +29,51 @@ export interface SubmitScoreResult {
   error?: string
 }
 
+const DEVICE_TOKEN_STORAGE_KEY = 'uwoguessr_device_token_v1'
+
+function decodeDeviceIdForDebug(token: string): string | null {
+  try {
+    const [payloadB64] = token.split('.')
+    if (!payloadB64) return null
+    const b64 = payloadB64.replace(/-/g, '+').replace(/_/g, '/')
+    const pad = b64.length % 4 === 0 ? '' : '='.repeat(4 - (b64.length % 4))
+    const json = atob(b64 + pad)
+    const parsed = JSON.parse(json) as { device_id?: unknown }
+    return typeof parsed.device_id === 'string' ? parsed.device_id : null
+  } catch {
+    return null
+  }
+}
+
+async function getOrCreateDeviceToken(): Promise<string> {
+  const existing = localStorage.getItem(DEVICE_TOKEN_STORAGE_KEY)
+  if (existing) return existing
+
+  const { data, error } = await supabase.functions.invoke('issue_device_token', {
+    body: {}
+  })
+
+  if (error) {
+    // Surface details if available
+    const ctx = (error as unknown as { context?: unknown }).context as
+      | { status?: number; statusText?: string; body?: unknown }
+      | undefined
+    let detailed = error.message || 'Failed to get device token'
+    if (ctx?.status) detailed += ` (HTTP ${ctx.status}${ctx.statusText ? ` ${ctx.statusText}` : ''})`
+    throw new Error(detailed)
+  }
+
+  const token = (data as { token?: unknown } | null)?.token
+  if (typeof token !== 'string' || token.length < 20) {
+    throw new Error('Device token response was invalid')
+  }
+
+  localStorage.setItem(DEVICE_TOKEN_STORAGE_KEY, token)
+  const deviceId = decodeDeviceIdForDebug(token)
+  if (deviceId) console.log('[device-token] issued new device_id:', deviceId)
+  return token
+}
+
 /**
  * Submit a daily challenge score via Edge Function (secure).
  * The server recalculates score; client cannot spoof points.
@@ -39,7 +84,14 @@ export const submitScore = async (
   guesses: Guess[]
 ): Promise<SubmitScoreResult> => {
   try {
+    const deviceToken = await getOrCreateDeviceToken()
+    const deviceId = decodeDeviceIdForDebug(deviceToken)
+    if (deviceId) console.log('[device-token] submitting as device_id:', deviceId)
+
     const { data, error } = await supabase.functions.invoke('submit_daily_score', {
+      headers: {
+        'x-device-token': deviceToken
+      },
       body: {
         player_name: playerName,
         challenge_date: challengeDate,

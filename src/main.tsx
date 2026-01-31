@@ -5,6 +5,20 @@ import { ErrorBoundary } from './components/ErrorBoundary'
 
 const root = document.getElementById('root')!
 
+// Dev helper: reset anonymous device token + daily lock via URL param.
+// Visit: http://localhost:5173/?resetDevice=1
+try {
+  const url = new URL(window.location.href)
+  if (url.searchParams.get('resetDevice') === '1') {
+    localStorage.removeItem('uwoguessr_device_token_v1')
+    localStorage.removeItem('uwoguessr_daily_completed_date')
+    url.searchParams.delete('resetDevice')
+    window.location.replace(url.toString())
+  }
+} catch {
+  // ignore
+}
+
 import('./App')
   .then(({ default: App }) => {
     ReactDOM.createRoot(root).render(
