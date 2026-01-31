@@ -4,7 +4,14 @@
 // - Enforces one submission per device per day via daily_device_submissions table
 // - Recalculates score server-side and inserts leaderboard row using service role
 
+// Minimal type shim for TS tooling (this runs in Deno on Supabase)
+declare const Deno: { env: { get: (key: string) => string | undefined } }
+
+// NOTE: This file runs on Supabase Edge Functions (Deno). These remote imports work at runtime.
+// Some TS tooling (VS Code/tsserver) can’t resolve `https://...` modules, so we silence that here.
+// @ts-expect-error Deno remote import
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts'
+// @ts-expect-error Deno remote import
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 
 const corsHeaders = {
