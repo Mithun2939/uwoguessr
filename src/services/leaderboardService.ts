@@ -14,29 +14,115 @@ export function getTodayLocalDate(): string {
 }
 
 /**
- * Submit a score to the leaderboard
+ * Daily score submission payload (for Edge Function)
+ */
+export interface Guess {
+  location_id: string
+  guess_lat: number
+  guess_lng: number
+}
+
+export interface SubmitScoreResult {
+  success: boolean
+  entry?: LeaderboardEntry
+  calculatedScore?: number
+  error?: string
+}
+
+/**
+ * Submit a daily challenge score via Edge Function (secure).
+ * The server recalculates score; client cannot spoof points.
  */
 export const submitScore = async (
   playerName: string,
-  score: number,
-  challengeDate: string
-): Promise<LeaderboardEntry | null> => {
+  challengeDate: string,
+  guesses: Guess[]
+): Promise<SubmitScoreResult> => {
+  try {
+    const { data, error } = await supabase.functions.invoke('submit_daily_score', {
+      body: {
+        player_name: playerName,
+        challenge_date: challengeDate,
+        guesses
+      }
+    })
+
+    if (error) {
+      // Supabase returns a generic message for non-2xx. Try to surface the real JSON body.
+      const ctx = (error as unknown as { context?: unknown }).context as
+        | { status?: number; statusText?: string; body?: unknown }
+        | undefined
+
+      let detailed = error.message || 'Failed to submit score'
+      if (ctx?.status) detailed += ` (HTTP ${ctx.status}${ctx.statusText ? ` ${ctx.statusText}` : ''})`
+
+      if (ctx?.body != null) {
+        // ctx.body can be a string OR a ReadableStream in the browser.
+        let bodyText: string | undefined
+        try {
+          if (typeof ctx.body === 'string') {
+            bodyText = ctx.body
+          } else if (ctx.body instanceof ReadableStream) {
+            bodyText = await new Response(ctx.body).text()
+          } else {
+            bodyText = String(ctx.body)
+          }
+        } catch {
+          bodyText = undefined
+        }
+
+        if (bodyText) {
+          try {
+            const parsed = JSON.parse(bodyText)
+            if (parsed?.error) detailed = String(parsed.error)
+            else detailed = bodyText
+          } catch {
+            detailed = bodyText
+          }
+        }
+      }
+
+      console.error('Error calling submit_daily_score:', error)
+      return { success: false, error: detailed }
+    }
+
+    if (data?.error) {
+      return { success: false, error: data.error }
+    }
+
+    if (data?.success && data?.entry) {
+      return {
+        success: true,
+        entry: data.entry as LeaderboardEntry,
+        calculatedScore: data.calculated_score as number | undefined
+      }
+    }
+
+    return { success: false, error: 'Unexpected response from server' }
+  } catch (err) {
+    console.error('Error submitting score:', err)
+    return { success: false, error: err instanceof Error ? err.message : 'Failed to submit score' }
+  }
+}
+
+/**
+ * Used for "one play per day" UX gating (best-effort; DB/Edge Function is the real enforcement).
+ */
+export const hasPlayedToday = async (playerName: string): Promise<boolean> => {
+  const today = getTodayLocalDate()
   const { data, error } = await supabase
     .from('leaderboard')
-    .insert({
-      player_name: playerName,
-      score,
-      challenge_date: challengeDate
-    })
-    .select()
-    .single()
-  
+    .select('id')
+    .ilike('player_name', playerName.trim())
+    .eq('challenge_date', today)
+    .limit(1)
+
   if (error) {
-    console.error('Error submitting score:', error)
-    return null
+    console.error('Error checking hasPlayedToday:', error)
+    return false
   }
-  
-  return data
+
+  return (data?.length ?? 0) > 0
 }
 
 /**

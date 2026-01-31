@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
-import { Target, Trophy, MapPin, X } from 'lucide-react'
+import { Target, Trophy, MapPin, X, Lock } from 'lucide-react'
+import { getTodayLocalDate } from '../services/leaderboardService'
 
 type GameMode = 'daily' | 'classic'
 
@@ -9,12 +10,13 @@ interface HomeProps {
 
 export const Home: React.FC<HomeProps> = ({ onStartGame }) => {
   const [showHowToPlay, setShowHowToPlay] = useState(false)
+  const [dailyLocked, setDailyLocked] = useState(false)
   const MAX_ROUNDS = 5
   const MAX_POINTS = MAX_ROUNDS * 5000
 
   const handlePlayDaily = () => {
     setShowHowToPlay(false)
-    onStartGame('daily')
+    if (!dailyLocked) onStartGame('daily')
   }
 
   useEffect(() => {
@@ -23,6 +25,13 @@ export const Home: React.FC<HomeProps> = ({ onStartGame }) => {
     }
     window.addEventListener('keydown', onKeyDown)
     return () => window.removeEventListener('keydown', onKeyDown)
+  }, [])
+
+  useEffect(() => {
+    // Anonymous play: best-effort lock via localStorage for this browser/device
+    const completed = localStorage.getItem('uwoguessr_daily_completed_date')
+    const today = getTodayLocalDate()
+    setDailyLocked(completed === today)
   }, [])
 
   return (
@@ -66,11 +75,25 @@ export const Home: React.FC<HomeProps> = ({ onStartGame }) => {
         </h1>
 
         <div className="flex flex-col items-center gap-3 lg:gap-4">
+          {dailyLocked && (
+            <div className="w-full max-w-[300px] sm:max-w-[340px] lg:max-w-[420px] xl:max-w-[480px] bg-yellow-50 border-2 border-yellow-300 rounded-xl p-4 mb-1">
+              <div className="flex items-center gap-2 text-yellow-800">
+                <Lock size={20} />
+                <p className="text-sm font-semibold">You&apos;ve already completed today&apos;s challenge!</p>
+              </div>
+              <p className="text-xs text-yellow-700 mt-1">Come back tomorrow for a new set.</p>
+            </div>
+          )}
           <button
-            onClick={() => onStartGame('daily')}
-            className="w-full max-w-[300px] sm:max-w-[340px] lg:max-w-[420px] xl:max-w-[480px] bg-purple-900 text-white px-6 sm:px-8 lg:px-12 lg:py-4 py-2.5 sm:py-3 rounded-2xl font-bold hover:bg-purple-800 transition-all duration-200 text-sm sm:text-base lg:text-lg shadow-lg shadow-purple-900/20 hover:shadow-xl hover:shadow-purple-900/25 hover:scale-[1.02] active:scale-[0.98]"
+            onClick={handlePlayDaily}
+            disabled={dailyLocked}
+            className={`w-full max-w-[300px] sm:max-w-[340px] lg:max-w-[420px] xl:max-w-[480px] px-6 sm:px-8 lg:px-12 lg:py-4 py-2.5 sm:py-3 rounded-2xl font-bold transition-all duration-200 text-sm sm:text-base lg:text-lg shadow-lg ${
+              dailyLocked
+                ? 'bg-slate-400 text-white cursor-not-allowed shadow-slate-400/20'
+                : 'bg-purple-900 text-white hover:bg-purple-800 shadow-purple-900/20 hover:shadow-xl hover:shadow-purple-900/25 hover:scale-[1.02] active:scale-[0.98]'
+            }`}
           >
-            Daily Challenge
+            {dailyLocked ? 'Come back tomorrow' : 'Daily Challenge'}
           </button>
           <button
             onClick={() => onStartGame('classic')}

@@ -14,6 +14,12 @@ interface GameProps {
   onExit: () => void
 }
 
+interface StoredGuess {
+  location_id: string
+  guess_lat: number
+  guess_lng: number
+}
+
 const WESTERN_CENTER: [number, number] = [43.0096, -81.2737]
 const MAX_ROUNDS = 5
 
@@ -27,6 +33,9 @@ export const Game: React.FC<GameProps> = ({ mode, onComplete, onExit }) => {
   const [loading, setLoading] = useState(true)
   const [playerName, setPlayerName] = useState('')
   const [showNameInput, setShowNameInput] = useState(false)
+  const [allGuesses, setAllGuesses] = useState<StoredGuess[]>([])
+  const [submitting, setSubmitting] = useState(false)
+  const [submissionError, setSubmissionError] = useState<string | null>(null)
 
   useEffect(() => {
     loadChallenge()
@@ -81,6 +90,16 @@ export const Game: React.FC<GameProps> = ({ mode, onComplete, onExit }) => {
       locations[round]
     )
 
+    // Store guess for server-side score calculation
+    setAllGuesses(prev => [
+      ...prev,
+      {
+        location_id: locations[round].id,
+        guess_lat: guessLocation.lat,
+        guess_lng: guessLocation.lng
+      }
+    ])
+
     setCurrentGuess(guess)
     setTotalScore(prev => prev + guess.score)
     setShowResult(true)
@@ -102,12 +121,32 @@ export const Game: React.FC<GameProps> = ({ mode, onComplete, onExit }) => {
   }
 
   const saveScore = async () => {
-    if (!playerName.trim()) return
+    if (!playerName.trim() || allGuesses.length !== MAX_ROUNDS) {
+      setSubmissionError('Please finish all 5 rounds before submitting.')
+      return
+    }
+
+    setSubmitting(true)
+    setSubmissionError(null)
 
     // Use local date (not UTC) to match the user's calendar day
     const today = getTodayLocalDate()
-    await submitScore(playerName.trim(), totalScore, today)
-    onComplete(totalScore)
+    const result = await submitScore(playerName.trim(), today, allGuesses)
+
+    setSubmitting(false)
+
+    if (!result.success) {
+      setSubmissionError(result.error || 'Failed to submit score. Check console for details.')
+      console.error('submitScore failed:', result)
+      return
+    }
+
+    // Save name locally (used later for "played today" gating)
+    localStorage.setItem('uwoguessr_player_name', playerName.trim())
+    // Mark daily as completed for this device/browser (best-effort, since play is anonymous)
+    localStorage.setItem('uwoguessr_daily_completed_date', today)
+
+    onComplete(result.calculatedScore ?? totalScore)
   }
 
   if (loading) {
@@ -129,6 +168,12 @@ export const Game: React.FC<GameProps> = ({ mode, onComplete, onExit }) => {
           <h2 className="text-3xl font-bold mb-2 text-center">Great Job!</h2>
           <p className="text-5xl font-bold text-purple-900 mb-6 text-center">{totalScore.toLocaleString()}</p>
           <p className="text-gray-600 mb-6 text-center">Total Points</p>
+
+          {submissionError && (
+            <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-xl">
+              <p className="text-sm text-red-800 font-medium text-center">{submissionError}</p>
+            </div>
+          )}
           
           <div className="mb-6">
             <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -137,25 +182,29 @@ export const Game: React.FC<GameProps> = ({ mode, onComplete, onExit }) => {
             <input
               type="text"
               value={playerName}
-              onChange={(e) => setPlayerName(e.target.value)}
-              onKeyPress={(e) => e.key === 'Enter' && saveScore()}
+              onChange={(e) => {
+                setPlayerName(e.target.value)
+                setSubmissionError(null)
+              }}
+              onKeyPress={(e) => e.key === 'Enter' && !submitting && saveScore()}
               placeholder="Your name"
               className="w-full px-4 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-400 focus:border-purple-400 transition-all duration-200"
               maxLength={20}
               autoFocus
+              disabled={submitting}
             />
           </div>
           
           <button
             onClick={saveScore}
-            disabled={!playerName.trim()}
+            disabled={!playerName.trim() || submitting || allGuesses.length !== MAX_ROUNDS}
             className={`w-full py-3 rounded-xl font-semibold transition-all duration-200 mb-3 ${
-              playerName.trim()
+              playerName.trim() && !submitting && allGuesses.length === MAX_ROUNDS
                 ? 'bg-purple-900 text-white hover:bg-purple-800 hover:shadow-lg hover:shadow-purple-900/20 hover:scale-[1.01] active:scale-[0.99]'
                 : 'bg-slate-200 text-slate-500 cursor-not-allowed'
             }`}
           >
-            Save to Leaderboard
+            {submitting ? 'Submitting...' : 'Save to Leaderboard'}
           </button>
           
           <button
